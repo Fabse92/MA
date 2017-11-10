@@ -1,0 +1,44 @@
+digraph G {
+  graph [fontname = "Helvetica-Oblique", rankdir=UD];
+  node [color = white, fontsize = 21];
+  edge [fontsize = 21]
+  subgraph cluster_1 {
+	  style=filled;
+	  color=lightgrey;
+	  node [style=filled,color=white];
+	  "Current camera image";
+	  "View pose history";
+	  "Current map of environment";
+	  "Current object candidates";
+	  label = "Input";
+  }
+  subgraph cluster_2 {
+	  style=filled;
+	  color=lightgrey;
+	  node [style=filled,color=white];
+	  "Feature vector from current view";
+	  "Exploration of frontiers";
+	  "How to increase certainty of already found objects";
+	  "Input history" -> "Predicted change in score for all possible movements";
+	  "IoR meachanism";
+	  label = "Attention modules";
+  }
+  node [color = black, fontsize = 21];
+  edge [fontsize = 21]
+  "Current camera image" -> "Feature vector from current view";
+  "Current camera image" ->  "Input history";
+  "Current map of environment" -> "Exploration of frontiers";
+  "Current map of environment" -> "Input history";
+  "Current object candidates" -> "How to increase certainty of already found objects";
+  "Current object candidates" -> "Input history";
+  "View pose history" -> "IoR meachanism";
+  
+  "IoR meachanism" -> "RL module (decides which movement to take)";
+  "Predicted change in score for all possible movements" -> "RL module (decides which movement to take)";
+  "How to increase certainty of already found objects" -> "RL module (decides which movement to take)";
+  "Exploration of frontiers" -> "RL module (decides which movement to take)";
+  "Feature vector from current view" -> "RL module (decides which movement to take)";
+  
+  "Current camera image" -> "Task solver (e.g. room classifier)";
+  "Task solver (e.g. room classifier)" -> "RL module (decides which movement to take)" [label = "provides reward signal"];
+}
